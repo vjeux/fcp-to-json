@@ -16,26 +16,102 @@ The content of this folder is the following:
 
 <img width="458" height="879" alt="image" src="https://github.com/user-attachments/assets/3b3fbdfa-8779-4ce9-8535-829bd3bcc7f3" />
 
+# .fcpevent
+
 The files `.fcpevent` and `.flexolibrary` are SQLite databases with the same schema. You can use [DB Browser for SQLite](https://sqlitebrowser.org/) to open it on MacOS or use [node:sqlite](https://nodejs.org/api/sqlite.html) to read the content.
 
 <img width="325" height="942" alt="image" src="https://github.com/user-attachments/assets/5a321a40-ed9a-4956-b79d-84777716507f" />
 
-## ZCATALOGROOT
+## ZCATALOGROOT & ZCATALOGROOTMD
 
-There's a single entry that links to the `ZCATALOGROOTMD` table. Since this one isn't super useful, I'm going to explain the structure in `ZCOLLECTION` section.
+While this project only has one catalog, I assume that you can have many different catalogs and these two tables lists them out. `ZCATALOGROOT` looks like the following:
+
+* `Z_PK` is the unique identifier for that catalog. This is referenced by the `ZCATALOG` column in `ZCOLLECTION` table.
+* `Z_ENT` is the entity number defined in `Z_PRIMARYKEY` table. In my case it's always `1`.
+* `Z_OPT`, I'm not really sure what it is about.
+* `Z_METADATA` is a reference to the field `Z_PK` in the `ZCATALOGROOTMD` (`MD` stands for `metadata`).
+* `Z_IDENTIFIER` is a `UUID` column, but it seems to be always `NULL` for `ZCATALOGROOT` (it's not in `ZCOLLECTION`).
+* `Z_NAME` seems to be `$ROOT_CATALOG`.
 
 <img width="446" height="106" alt="image" src="https://github.com/user-attachments/assets/25faf825-ac4b-4626-8645-d02168c60b91" />
 
-## ZCATALOGROOTMD
+With the `Z_METADATA`, we can get the metadata information from `ZCATALOGROOTMD`.
 
-If you see a binary blob content starting with `bplist`, this is a json binary encoded content. I used [node-bplist-parser](https://github.com/joeferner/node-bplist-parser/) to read it:
+* `Z_PK` is the identifier to be associated with `Z_METADATA`
+* `Z_ENT` is the entity number defined in `Z_PRIMARYKEY` table. In my case it's always `2`.
+* `Z_OPT`, I'm not really sure what it is about.
+* `Z_CATALOG` is a back reference to the `Z_PK` of the `ZCATALOGROOT` table it is linked from.
+* `Z_IDENTIFIER` is a `UUID` column, but it seems to be always `NULL` for `ZCATALOGROOTMD` (it's not in `ZCOLLECTION`).
+* `ZDICTIONARYDATA` is the where the actual information is in. See below for how to read it.
 
 <img width="927" height="239" alt="image" src="https://github.com/user-attachments/assets/35811421-c33f-48f6-bf8a-420487f875a3" />
 
-The content is not overly exciting. Two entire tables for really just the `$rootObjectID`.
+If you see a binary blob content starting with `bplist`, this is a json binary encoded content. I used [node-bplist-parser](https://github.com/joeferner/node-bplist-parser/) to read it. The important piece of information is `$rootObjectID` which is the `ZIDENTIFIER` column in `ZCOLLECTION` for the object of `ZTYPE` `FFMediaEventProject`.
 
 <img width="412" height="89" alt="image" src="https://github.com/user-attachments/assets/06650d71-36b3-4259-a957-ae558e534262" />
 
+## ZCOLLECTION & ZCOLLECTIONMD
+
+This is where the bulk of the content resides. Let's first discuss the structure of the two tables. For `ZCOLLECTION`:
+
+* `Z_PK` is the unique identifier for that entry.
+* `Z_ENT` is the entity number defined in `Z_PRIMARYKEY` table. In my case it's always `3`.
+* `Z_OPT`, I'm not really sure what it is about. It goes from `0` to `11` in my example.
+* `Z_FLAGS`, I'm not really sure what it is about. It is either `0` or `1` in my example.
+* `Z_METADATA` is a reference to the field `Z_PK` in the `ZCOLLECTIONMD` (`MD` stands for `metadata`). It can be `NULL`.
+* `Z_IDENTIFIER` is a either a `UUID` if `ZNAME` is `NULL` or `NULL` if `ZNAME` is not `NULL`.
+* `Z_NAME` seems to be the `ZTYPE` is a raw collection (`NSSet` or `NSArray`) or `NULL` if the `ZTYPE` is a custom `ZTYPE` (eg: `FFEffectStack`).
+* `ZTYPE` is the Objective-C class name that's used to deserialize the metadata into.
+
+<img width="981" height="347" alt="image" src="https://github.com/user-attachments/assets/4ed37815-e0f7-45de-b391-f4176aedcb55" />
+
+The actual content of the entry lives in `ZCOLLECTIONMD`. With the `Z_METADATA`, we can get the metadata information from `ZCATALOGROOTMD`.
+
+* `Z_PK` is the identifier to be associated with `Z_METADATA`
+* `Z_ENT` is the entity number defined in `Z_PRIMARYKEY` table. In my case it's always `4`.
+* `Z_OPT`, I'm not really sure what it is about.
+* `Z_COLLECTION` is a back reference to the `Z_PK` of the `ZCOLLECTION` table it is linked from.
+* `Z_IDENTIFIER` is a `UUID` column, but it seems to be always `NULL` for `ZCOLLECTIONMD` (it's not in `ZCOLLECTION`).
+* `ZDICTIONARYDATA` is the where the actual information is in encoded as a bplist.
+
+<img width="984" height="300" alt="image" src="https://github.com/user-attachments/assets/3645ff29-1b3e-4981-99a6-a2b5909961b1" />
+
+These are all the types that exist in my sample project:
+
+### FFAnchoredCollection
+### FFAnchoredMediaComponent
+### FFAnchoredSequence
+### FFAnchoredTransition
+### FFAssetRef
+### FFAudioClipComponentsLayoutMap
+### FFAudioTransitionEffect
+### FFEffectStack
+### FFHeColorEffect
+### FFHeConformEffect
+### FFIntrinsicColorConformEffect
+### FFMediaEventFolder
+### FFMediaEventProject
+### FFMediaEventProjectData
+### FFMotionEffect
+### FFSequenceInfo
+### FFUserDefaults
+### anchoredItems
+### assetReferences
+### audioComponentsLayoutMap
+### audioEffects
+### containedItems
+### customEffect
+### effectStack
+### intrinsicEffects
+### media
+### ownedMedia
+### persistedAnchoredObject
+### primaryObject
+### rootFolder
+### sequence
+### sequenceInfo
+### userDefaults
+### videoEffects
 
 ## Z_PRIMARYKEY
 
@@ -67,3 +143,11 @@ The bplist content is the following:
 `NSStoreModelVersionHashesDigest` and `NSStoreModelVersionChecksumKey` are just base64 encoded binary content. Don't ask me why they decided to base64 encode these ones and not the ones just below. You can use `Buffer.from(content, 'base64')` to go from base64 to binary buffer in node.
 
 <img width="628" height="86" alt="image" src="https://github.com/user-attachments/assets/60a8d28a-7228-4872-9653-496e49640280" />
+
+# .plist
+
+[Need to write]
+
+# Frame X - Y
+
+[Need to write]
