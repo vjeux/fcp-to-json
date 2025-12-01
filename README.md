@@ -133,6 +133,10 @@ These are all the types that exist in my sample project:
 
 <img width="265" height="21" alt="image" src="https://github.com/user-attachments/assets/1bd5584e-2622-4595-8a88-b2b288d1504a" />
 
+### FFMediaRep
+
+<img width="373" height="1015" alt="image" src="https://github.com/user-attachments/assets/387aaa68-600e-4bd4-9774-422277c7a436" />
+
 ### FFMotionEffect
 
 <img width="651" height="158" alt="image" src="https://github.com/user-attachments/assets/2a379539-e527-49c1-9b07-c76c6afd4a8f" />
