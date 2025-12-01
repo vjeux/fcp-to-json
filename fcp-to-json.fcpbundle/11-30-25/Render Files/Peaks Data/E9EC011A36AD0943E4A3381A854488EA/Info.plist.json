@@ -1,0 +1,40 @@
+{
+  "FFSegmentStoreEncodedHeight": 1,
+  "FFSegmentStoreEncodedWidth": 516,
+  "FFSegmentStoreFieldOrder": -1,
+  "FFSegmentStoreFileFrameCount": 1024,
+  "FFSegmentStoreFirstSample": 0,
+  "FFSegmentStoreHEVCConfigsDictionary": {},
+  "FFSegmentStorePixelTransformArray": [],
+  "FFSegmentStoreRenderProps": "FFRenderPropsUncompressedData",
+  "FFSegmentStoreSegmentStoreMD5": {
+    "type": "Buffer",
+    "data": [
+      233,
+      236,
+      1,
+      26,
+      54,
+      173,
+      9,
+      67,
+      228,
+      163,
+      56,
+      26,
+      133,
+      68,
+      136,
+      234
+    ]
+  },
+  "FFSegmentStoreStoredFrameIndexes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ]
+}
