@@ -1,7 +1,6 @@
 # fcp-to-json
 Export Final Cut Pro project file format to JSON
 
-
 # File Format
 
 For this entire example, I'm going to go through the following little project where I took a 32s video, used the blade tool to cut it in half and inserted a "360° Bloom" transition in between and made it last longer.
@@ -79,39 +78,100 @@ The actual content of the entry lives in `ZCOLLECTIONMD`. With the `Z_METADATA`,
 These are all the types that exist in my sample project:
 
 ### FFAnchoredCollection
+
+<img width="421" height="549" alt="image" src="https://github.com/user-attachments/assets/fd583133-3391-407e-8981-72060f3dac8b" />
+
 ### FFAnchoredMediaComponent
+
+<img width="286" height="156" alt="image" src="https://github.com/user-attachments/assets/7006e6c5-a786-4ae1-a3f8-307f35ee3368" />
+
 ### FFAnchoredSequence
+
+<img width="319" height="173" alt="image" src="https://github.com/user-attachments/assets/b8c14183-15cb-4f9c-9244-6e6bc6d5500d" />
+
 ### FFAnchoredTransition
+
+<img width="353" height="242" alt="image" src="https://github.com/user-attachments/assets/f12f3a28-f756-4b5e-9b6e-6b123f8c7ada" />
+
 ### FFAssetRef
+
+<img width="384" height="69" alt="image" src="https://github.com/user-attachments/assets/8f4288f5-86c7-478d-9a26-f2216f88332f" />
+
 ### FFAudioClipComponentsLayoutMap
+
+<img width="422" height="20" alt="image" src="https://github.com/user-attachments/assets/17627c82-76ba-4b16-8948-5b8b3f309f1c" />
+
 ### FFAudioTransitionEffect
+
+<img width="629" height="136" alt="image" src="https://github.com/user-attachments/assets/cf291918-ae89-4437-9129-52be2ddcf8de" />
+
 ### FFEffectStack
+
+<img width="355" height="19" alt="image" src="https://github.com/user-attachments/assets/8c135a73-5839-4d04-a839-8e57cd8cbb78" />
+
 ### FFHeColorEffect
+
+<img width="258" height="121" alt="image" src="https://github.com/user-attachments/assets/81f75937-bb5b-4a98-afaf-544b10899f89" />
+
 ### FFHeConformEffect
+
+<img width="627" height="135" alt="image" src="https://github.com/user-attachments/assets/72a7377b-a121-44ee-b7cf-ad766b02f5f6" />
+
 ### FFIntrinsicColorConformEffect
+
+<img width="315" height="86" alt="image" src="https://github.com/user-attachments/assets/8bec734b-8ae8-4fde-af73-31f63498de1e" />
+
 ### FFMediaEventFolder
+
+<img width="399" height="18" alt="image" src="https://github.com/user-attachments/assets/b9a42744-8331-4683-ae64-74d0489c3d27" />
+
 ### FFMediaEventProject
+
+<img width="642" height="612" alt="image" src="https://github.com/user-attachments/assets/66b602ed-5e0a-4eec-8f1b-12e5b4760886" />
+
 ### FFMediaEventProjectData
+
+<img width="265" height="21" alt="image" src="https://github.com/user-attachments/assets/1bd5584e-2622-4595-8a88-b2b288d1504a" />
+
 ### FFMotionEffect
+
+<img width="651" height="158" alt="image" src="https://github.com/user-attachments/assets/2a379539-e527-49c1-9b07-c76c6afd4a8f" />
+
 ### FFSequenceInfo
+
+<img width="476" height="377" alt="image" src="https://github.com/user-attachments/assets/395b617c-fd1b-4423-b567-62e40a9d0f71" />
+
 ### FFUserDefaults
-### anchoredItems
-### assetReferences
-### audioComponentsLayoutMap
-### audioEffects
+
+<img width="273" height="496" alt="image" src="https://github.com/user-attachments/assets/3bec03bd-0c47-4407-b31a-d08677d6aa2b" />
+
 ### containedItems
-### customEffect
-### effectStack
+
+<img width="310" height="122" alt="image" src="https://github.com/user-attachments/assets/f714faa1-f22d-4519-9ca3-027acae62950" />
+
 ### intrinsicEffects
-### media
-### ownedMedia
-### persistedAnchoredObject
-### primaryObject
-### rootFolder
-### sequence
-### sequenceInfo
-### userDefaults
-### videoEffects
+
+<img width="308" height="123" alt="image" src="https://github.com/user-attachments/assets/166bb1b1-d4ef-49dd-9f9a-2bccd0d418c1" />
+
+## Z_3CHILDCOLLECTIONS
+
+I'm very confused by this one. This is a list of `[parent, child]` pairs where each number is a `ZCOLLECTION` `Z_PK`. But the data doesn't really fit a parent-child relationships. Some nodes are the parent of multiple children (normal) and some nodes are the children of multiple parents (not normal). There are also cycles in the graph if you consider them edges.
+
+<img width="388" height="323" alt="image" src="https://github.com/user-attachments/assets/67769dd6-5696-4f10-b523-260b76935784" />
+
+## Z_METADATA
+
+This is another table that is just there to store a single binary blob under `Z_PLIST`.
+
+<img width="950" height="334" alt="image" src="https://github.com/user-attachments/assets/def9be96-59a6-41d3-9c7d-1b40562c2ea6" />
+
+The bplist content is the following:
+
+<img width="901" height="324" alt="image" src="https://github.com/user-attachments/assets/00b9d113-223e-460b-a4d7-660ca4f10dc3" />
+
+`NSStoreModelVersionHashesDigest` and `NSStoreModelVersionChecksumKey` are just base64 encoded binary content. Don't ask me why they decided to base64 encode these ones and not the ones just below. You can use `Buffer.from(content, 'base64')` to go from base64 to binary buffer in node.
+
+<img width="628" height="86" alt="image" src="https://github.com/user-attachments/assets/60a8d28a-7228-4872-9653-496e49640280" />
 
 ## Z_PRIMARYKEY
 
@@ -130,23 +190,32 @@ It's just a single binary blob under `Z_CONTENT`. I haven't tried parsing this c
 
 <img width="705" height="296" alt="image" src="https://github.com/user-attachments/assets/f8f87509-032a-4885-b70f-801b6b2b60e3" />
 
-## Z_METADATA
-
-This is another table that is just there to store a single binary blob under `Z_PLIST`.
-
-<img width="950" height="334" alt="image" src="https://github.com/user-attachments/assets/def9be96-59a6-41d3-9c7d-1b40562c2ea6" />
-
-The bplist content is the following:
-
-<img width="901" height="324" alt="image" src="https://github.com/user-attachments/assets/00b9d113-223e-460b-a4d7-660ca4f10dc3" />
-
-`NSStoreModelVersionHashesDigest` and `NSStoreModelVersionChecksumKey` are just base64 encoded binary content. Don't ask me why they decided to base64 encode these ones and not the ones just below. You can use `Buffer.from(content, 'base64')` to go from base64 to binary buffer in node.
-
-<img width="628" height="86" alt="image" src="https://github.com/user-attachments/assets/60a8d28a-7228-4872-9653-496e49640280" />
-
 # .plist
 
-[Need to write]
+There's a lot of `Info.plist` files that all have the same structure:
+
+<img width="772" height="841" alt="image" src="https://github.com/user-attachments/assets/f91cbe03-14f1-41f7-ae3a-639a54e5e970" />
+
+The overall plist file is a JSON object serialized as XML.
+
+There are two composite types:
+* `<dict>`: the children are a sequence of `<key>string</key>` and values.
+* `<array>`: the children are a sequence of values.
+
+And many primitive types:
+* `<real>-1.0</real>`: a floating point value.
+* `<integer>10</integer>`: an integer value.
+* `<string>a string</string>`: a string.
+* `<data>base64</data>`: this is a base64 encoded value. You need to remove all the whitespace and new lines. You can use `Buffer.from(content, 'base64')` to go from base64 to binary buffer in node.
+  * In many cases the value is encoded in the bplist format.
+
+<img width="635" height="512" alt="image" src="https://github.com/user-attachments/assets/e6fede1e-ce2d-4ebb-be14-ad7f48fce950" />
+
+## CurrentVersion.plist and Settings.plist
+
+These are not the most interesting files but writing them here for completeness.
+
+<img width="479" height="190" alt="image" src="https://github.com/user-attachments/assets/f28d973a-c1cd-45ae-99c2-64d85c3f0cf1" />
 
 # Frame X - Y
 
